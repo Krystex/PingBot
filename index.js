@@ -2,15 +2,20 @@ const INTERVAL = 1000  // Execute every second
 
 const schedule = (func) => {
   const exec = () => {
-    ms = new Date().getTime() % INTERVAL
+    // Calculate difference to next executing
+    diff = INTERVAL - (new Date().getTime() % INTERVAL)
     setTimeout(_ => {
+      // Recursively plan next executing
       exec()
-      func()
-    }, INTERVAL - ms)
+      // Round time (because we don't care about milliseconds difference) and execute actual function
+      const time = Math.round(new Date().getTime() / INTERVAL) * INTERVAL
+      func(time)
+    }, diff)
   }
   exec()
 }
 
-schedule(_ => {
-  console.log(new Date().getTime())
+// Main entrypoint
+schedule(time => {
+  console.log(time)
 })
