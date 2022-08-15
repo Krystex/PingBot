@@ -1,3 +1,5 @@
+const { exec } = require("child_process")
+
 const INTERVAL = 1000  // Execute every second
 
 const schedule = (func) => {
@@ -17,5 +19,9 @@ const schedule = (func) => {
 
 // Main entrypoint
 schedule(time => {
-  console.log(time)
+  exec("ping -c1 google.com", (error, stdout, stderr) => {
+    console.error(error)
+    console.log(stdout)
+    console.error(stderr)
+  })
 })
