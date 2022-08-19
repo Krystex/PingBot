@@ -1,7 +1,9 @@
 const { exec } = require("child_process")
 const { open } = require("node:fs/promises")
+const process = require("process")
 
-const INTERVAL = 1000  // Execute every second
+const INTERVAL = process.env.INTERVAL || 10000  // Execute every 10 seconds
+const PING_COMMAND = process.env.PING_COMMAND || "ping -c1 google.com"
 
 const schedule = (interval, func) => {
   const exec = () => {
@@ -12,6 +14,7 @@ const schedule = (interval, func) => {
       exec()
       // Round time (because we don't care about milliseconds difference) and execute actual function
       const time = Math.round(new Date().getTime() / interval) * interval
+      // Call used-defined function
       func(time)
     }, diff)
   }
@@ -30,7 +33,7 @@ const timeParser = (lines) => {
 
 // Main entrypoint
 schedule(INTERVAL, timestamp => {
-  exec("ping -c1 google.com", async (error, stdout, stderr) => {
+  exec(PING_COMMAND, async (error, stdout, stderr) => {
     // console.error(error)
     const lines = stdout.split("\n")
     const time = timeParser(lines)
