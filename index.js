@@ -32,6 +32,7 @@ const timeParser = (lines) => {
 }
 
 // Main entrypoint
+console.log("Started pingbot")
 schedule(INTERVAL, timestamp => {
   exec(PING_COMMAND, async (error, stdout, stderr) => {
     // console.error(error)
