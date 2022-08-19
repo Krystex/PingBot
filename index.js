@@ -1,4 +1,5 @@
 const { exec } = require("child_process")
+const { open } = require("node:fs/promises")
 
 const INTERVAL = 1000  // Execute every second
 
@@ -29,10 +30,12 @@ const timeParser = (lines) => {
 
 // Main entrypoint
 schedule(INTERVAL, timestamp => {
-  exec("ping -c1 google.com", (error, stdout, stderr) => {
+  exec("ping -c1 google.com", async (error, stdout, stderr) => {
     // console.error(error)
     const lines = stdout.split("\n")
     const time = timeParser(lines)
-    console.log(time)
+    const f = await open("./ping.csv", "a")
+    await f.appendFile(`${timestamp},${time}\n`)
+    await f.close()
   })
 })
