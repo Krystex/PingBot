@@ -1,6 +1,4 @@
-FROM node:18.7-alpine
-RUN addgroup -S group && adduser -S user -G group
-USER user
+FROM node:18-alpine
 
 WORKDIR /app
 ADD index.js .
