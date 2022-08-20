@@ -31,6 +31,8 @@ const timeParser = (lines) => {
   else return reg[1]
 }
 
+process.on("SIGINT", _ => process.exit())
+
 // Main entrypoint
 console.log("Started pingbot")
 schedule(INTERVAL, timestamp => {
