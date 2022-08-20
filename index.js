@@ -37,7 +37,7 @@ process.on("SIGINT", _ => process.exit())
 console.log("Started pingbot")
 schedule(INTERVAL, timestamp => {
   exec(PING_COMMAND, async (error, stdout, stderr) => {
-    // console.error(error)
+    if (error) console.error(error)
     const lines = stdout.split("\n")
     const time = timeParser(lines)
     const f = await open("./ping.csv", "a")
