@@ -5,6 +5,11 @@ const process = require("process")
 const INTERVAL = process.env.INTERVAL || 10000  // Execute every 10 seconds
 const PING_COMMAND = process.env.PING_COMMAND || "ping -c1 google.com"
 
+/**
+ * Schedule a function you want to execute in a specific interval
+ * @param {number} interval interval in milliseconds
+ * @param {Function} function function you want to execute in interval 
+ */
 const schedule = (interval, func) => {
   const exec = () => {
     // Calculate difference to next executing
@@ -21,6 +26,11 @@ const schedule = (interval, func) => {
   exec()
 }
 
+/**
+ * Function which parses the response time
+ * @param {Array<string>} lines newline-splitted output of ping command
+ * @returns {number} response time
+ */
 const timeParser = (lines) => {
   // Return if not enough lines are supplied
   if (lines.length < 2) return NaN
