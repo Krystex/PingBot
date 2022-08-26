@@ -27,11 +27,12 @@ const schedule = (interval, func) => {
 }
 
 /**
- * Function which parses the response time
- * @param {Array<string>} lines newline-splitted output of ping command
+ * Function which parses the ping command
+ * @param {string} stdout output of ping command
  * @returns {number} response time
  */
-const timeParser = (lines) => {
+const pingParser = (stdout) => {
+  const lines = stdout.split("\n")
   // Return if not enough lines are supplied
   if (lines.length < 2) return NaN
   // Execute regex
@@ -48,8 +49,7 @@ console.log("Started pingbot")
 schedule(INTERVAL, timestamp => {
   exec(PING_COMMAND, async (error, stdout, stderr) => {
     if (error) console.error(error)
-    const lines = stdout.split("\n")
-    const time = timeParser(lines)
+    const time = pingParser(stdout)
     const f = await open("./ping.csv", "a")
     await f.appendFile(`${timestamp},${time}\n`)
     await f.close()
