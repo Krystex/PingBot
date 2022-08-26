@@ -15,9 +15,9 @@ const schedule = (interval, func) => {
     // Calculate difference to next executing
     diff = interval - (new Date().getTime() % interval)
     setTimeout(_ => {
-      // Recursively plan next executing
+      // Recursively plan next execution
       exec()
-      // Round time (because we don't care about milliseconds difference) and execute actual function
+      // Calculate and round time (because we don't care about milliseconds difference)
       const time = Math.round(new Date().getTime() / interval) * interval
       // Call used-defined function
       func(time)
