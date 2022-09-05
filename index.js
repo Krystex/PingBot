@@ -4,6 +4,12 @@ const process = require("process")
 
 const INTERVAL = process.env.INTERVAL || 10000  // Execute every 10 seconds
 const PING_COMMAND = process.env.PING_COMMAND || "ping -c1 google.com"
+const MODE = process.env.mode || "influx"
+const INFLUX_HOST = process.env.INFLUX_HOST || "http://localhost:8086"
+const INFLUX_DB = process.env.INFLUX_DB || "main"
+const INFLUX_USER = process.env.INFLUX_USER
+const INFLUX_PASS = process.env.INFLUX_PASS
+
 
 /**
  * Schedule a function you want to execute in a specific interval
@@ -42,16 +48,34 @@ const pingParser = (stdout) => {
   else return reg[1]
 }
 
+const saveToCSV = async (timestamp, time) => {
+  const f = await open("./ping.csv", "a")
+  await f.appendFile(`${timestamp},${time}\n`)
+  await f.close()
+}
+
+const saveToInflux = async (timestamp, time) => {
+  // Thanks to https://github.com/robinmanuelthiel/speedtest/ :)
+  const url = `${INFLUX_HOST}/write?db=${INFLUX_DB}&precision=s&u=${INFLUX_USER}&p=${INFLUX_PASS}`
+  const payload = `ping,value ${time} ${timestamp}`
+  const res = await fetch(url, {method: "POST", body: payload})
+  console.log(res)
+}
+
 process.on("SIGINT", _ => process.exit())
 
 // Main entrypoint
-console.log("Started pingbot")
-schedule(INTERVAL, timestamp => {
-  exec(PING_COMMAND, async (error, stdout, stderr) => {
-    if (error) console.error(error)
-    const time = pingParser(stdout)
-    const f = await open("./ping.csv", "a")
-    await f.appendFile(`${timestamp},${time}\n`)
-    await f.close()
+const main = () => {
+  // TODO: Check if mode is correct
+  console.log("Started pingbot")
+  schedule(INTERVAL, timestamp => {
+    exec(PING_COMMAND, async (error, stdout, _stderr) => {
+      if (error) console.error(error)
+      const time = pingParser(stdout)
+
+      if (MODE === "csv") await saveToCSV(timestamp, time)
+      else if (MODE === "influx") await saveToInflux(timestamp, time)
+    })
   })
-})
+}
+main()
