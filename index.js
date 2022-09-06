@@ -57,9 +57,13 @@ const saveToCSV = async (timestamp, time) => {
 const saveToInflux = async (timestamp, time) => {
   // Thanks to https://github.com/robinmanuelthiel/speedtest/ :)
   const url = `${INFLUX_HOST}/write?db=${INFLUX_DB}&precision=s&u=${INFLUX_USER}&p=${INFLUX_PASS}`
-  const payload = `ping,value ${time} ${timestamp}`
+  const timestamp_s = Math.round(timestamp / 1000)
+  const payload = `ping response_time=${time} ${timestamp_s}`
   const res = await fetch(url, {method: "POST", body: payload})
-  console.log(res)
+  if (res.body !== null) {
+    const json = await res.json()
+    console.log(json)
+  }
 }
 
 process.on("SIGINT", _ => process.exit())
