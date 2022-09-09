@@ -15,8 +15,9 @@ const INFLUX_PASS = process.env.INFLUX_PASS
  * Schedule a function you want to execute in a specific interval
  * @param {number} interval interval in milliseconds
  * @param {Function} function function you want to execute in interval 
+ * @param {boolean} precision_seconds specifies if function will be called with current time in seconds (true) of milliseconds (false)
  */
-const schedule = (interval, func) => {
+const schedule = (interval, func, precision_seconds=true) => {
   const exec = () => {
     // Calculate difference to next executing
     diff = interval - (new Date().getTime() % interval)
@@ -24,7 +25,9 @@ const schedule = (interval, func) => {
       // Recursively plan next execution
       exec()
       // Calculate and round time (because we don't care about milliseconds difference)
-      const time = Math.round(new Date().getTime() / interval) * interval
+      let time = Math.round(new Date().getTime() / interval) * interval
+      // If time should be returned in seconds, divide it by 1000
+      if (precision_seconds) time = Math.round(time / 1000)
       // Call used-defined function
       func(time)
     }, diff)
@@ -57,12 +60,11 @@ const saveToCSV = async (timestamp, time) => {
 const saveToInflux = async (timestamp, time) => {
   // Thanks to https://github.com/robinmanuelthiel/speedtest/ :)
   const url = `${INFLUX_HOST}/write?db=${INFLUX_DB}&precision=s&u=${INFLUX_USER}&p=${INFLUX_PASS}`
-  const timestamp_s = Math.round(timestamp / 1000)
-  const payload = `ping response_time=${time} ${timestamp_s}`
+  const payload = `ping response_time=${time} ${timestamp}`
   const res = await fetch(url, {method: "POST", body: payload})
   if (res.body !== null) {
     const json = await res.json()
-    console.log(json)
+    console.error(json)
   }
 }
 
