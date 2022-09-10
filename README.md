@@ -1,5 +1,7 @@
 # PingBot
 
+[![Docker](https://img.shields.io/badge/Docker%20Hub-krystex/pingbot-blue.svg?logo=docker&style=for-the-badge)](https://hub.docker.com/r/krystex/pingbot)
+
 **PingBot** is a dependency-less node app which constantly pings some host and saves the response time to InfluxDB or a CSV-file.
 
 ### Running PingBot with InfluxDB (Docker)
