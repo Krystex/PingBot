@@ -4,7 +4,7 @@ const process = require("process")
 
 const INTERVAL = process.env.INTERVAL || 10000  // Execute every 10 seconds
 const PING_COMMAND = process.env.PING_COMMAND || "ping -c1 google.com"
-const MODE = process.env.mode || "influx"
+const MODE = process.env.MODE || "influx"
 const INFLUX_HOST = process.env.INFLUX_HOST || "http://localhost:8086"
 const INFLUX_DB = process.env.INFLUX_DB || "main"
 const INFLUX_USER = process.env.INFLUX_USER
