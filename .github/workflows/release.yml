@@ -33,7 +33,7 @@ jobs:
           docker buildx build \
             --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
-              --tag krystex/pingbot:${{ github.event.inputs.version }}
+              --tag krystex/pingbot:${{ github.event.inputs.version }} \
               --tag krystex/pingbot:latest \
               .
       - name: GitHub Release
