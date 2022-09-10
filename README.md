@@ -4,10 +4,15 @@
 
 **PingBot** is a dependency-less node app which constantly pings some host and saves the response time to InfluxDB or a CSV-file.
 
+Written with Node v18.
+
 ### Running PingBot with InfluxDB (Docker)
+
 <p align="center">
   <img src=".images/grafana-screenshot.png" width="600px" />
 </p>
+
+Note: Compatible only with InfluxDB v1.x.
 
 You can run PingBot with InfluxDB and Grafana (for visualization) for example with this `docker-compose.yml` file:
 ```yml
