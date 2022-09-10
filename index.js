@@ -46,9 +46,9 @@ const pingParser = (stdout) => {
   if (lines.length < 2) return NaN
   // Execute regex
   const reg = /time=(\d*\.\d*)/.exec(lines[1])
-  // if regex failed, return NaN
-  if ((reg === null) || (reg.length < 2)) return NaN
-  else return reg[1]
+  // if regex failed, return -1
+  if ((reg === null) || (reg.length < 2)) return -1
+  else return parseFloat(reg[1])
 }
 
 const saveToCSV = async (timestamp, time) => {
@@ -60,7 +60,11 @@ const saveToCSV = async (timestamp, time) => {
 const saveToInflux = async (timestamp, time) => {
   // Thanks to https://github.com/robinmanuelthiel/speedtest/ :)
   const url = `${INFLUX_HOST}/write?db=${INFLUX_DB}&precision=s&u=${INFLUX_USER}&p=${INFLUX_PASS}`
-  const payload = `ping response_time=${time} ${timestamp}`
+  let payload = `ping response_time=${time} ${timestamp}`
+  if (time === -1) {
+    // If endpoint is not reachable, set `error` tag for influx
+    payload = `ping,error=error response_time=-1 ${timestamp}`
+  }
   const res = await fetch(url, {method: "POST", body: payload})
   if (res.body !== null) {
     const json = await res.json()
