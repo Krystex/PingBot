@@ -2,6 +2,52 @@
 
 **PingBot** is a dependency-less node app which constantly pings some host and saves the response time to InfluxDB or a CSV-file.
 
+### Running PingBot with InfluxDB (Docker)
+You can run PingBot with InfluxDB and Grafana (for visualization) for example with this `docker-compose.yml` file:
+```yml
+version: "3"
+
+services:
+  pingbot:
+    image: krystex/pingbot:latest
+    depends_on:
+      - influx
+    environment:
+      INFLUX_HOST: http://influx:8086
+      INFLUX_USER: username
+      INFLUX_PASS: password
+      INFLUX_DB: main
+
+  influx:
+    image: influxdb:1.8.10-alpine
+    volumes:
+      - influx:/var/lib/influxdb
+    environment:
+      INFLUXDB_ADMIN_USER: username
+      INFLUXDB_ADMIN_PASSWORD: password
+      INFLUXDB_DB: main
+
+  grafana:
+    image: grafana/grafana:9.1.4
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana:/var/lib/grafana
+
+volumes:
+  influx:
+  grafana:
+```
+
+### Running PingBot with CSV-file (Docker)
+You simply need create a `ping.csv` file, and run the container with the file as a volume:
+```bash
+touch ping.csv
+docker run --name pingbot -e MODE=csv -v $PWD/ping.csv:/app/ping.csv krystex/pingbot:latest
+```
+
+
+### Configuration
 Configuration through environment variables:
 | Environment variable | Default | Purpose
 | -------------------- | ------- | -------
