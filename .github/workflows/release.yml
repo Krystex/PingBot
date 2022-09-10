@@ -3,8 +3,9 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      description: "Version to release"
-      required: true
+      version:
+        description: "Version to release"
+        required: true
 
 jobs:
   release:
