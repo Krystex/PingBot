@@ -1,12 +1,17 @@
 # PingBot
 
-**PingBot** is a dependency-less node app which constantly pings some host and saves the response time to a CSV-file.
+**PingBot** is a dependency-less node app which constantly pings some host and saves the response time to InfluxDB or a CSV-file.
 
 Configuration through environment variables:
 | Environment variable | Default | Purpose
 | -------------------- | ------- | -------
 | `INTERVAL` | `10000` | Millisecond interval in which ping gets executed
 | `PING_COMMAND` | `ping -c1 google.com` | Exact ping command
+| `MODE` | `influx` | Mode of saving, can be either `csv` or `influx`
+| `INFLUX_HOST` | `http://localhost:8086` | InfluxDB hostname to connect to
+| `INFLUX_DB` | `main` | InfluxDB database name
+| `INFLUX_USER` | - | InfluxDB username for authentication
+| `INFLUX_PASS` | - | InfluxDB password for authentication
 
 
 ### Developing locally
