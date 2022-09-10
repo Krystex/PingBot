@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  influx:
+    image: influxdb:1.8.10-alpine
+    volumes:
+      - influx:/var/lib/influxdb
+    environment:
+      INFLUXDB_ADMIN_USER: username
+      INFLUXDB_ADMIN_PASSWORD: password
+      INFLUXDB_DB: main
+
+  grafana:
+    image: grafana/grafana:9.1.4
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana:/var/lib/grafana
+
+  pingbot:
+    image: krystex/pingbot:latest
+    depends_on:
+      - influx
+    environment:
+      INFLUX_HOST: http://influx:8086
+      INFLUX_USER: username
+      INFLUX_PASS: password
+      INFLUX_DB: main
+
+
+volumes:
+  influx:
+  grafana:
